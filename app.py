@@ -8,7 +8,6 @@ import openpyxl
 # Set page config for wider layout
 st.set_page_config(
     page_title="Tool Wear Detection System",
-    page_icon="🔧",
     layout="wide"
 )
 
@@ -125,7 +124,7 @@ def process_data(uploaded_file):
 
 def main():
     # Main title with custom styling
-    st.markdown('<h1 class="main-header">🔧 Tool Wear Detection System</h1>', unsafe_allow_html=True)
+    st.markdown('<h1 class="main-header"> Tool Wear Detection System</h1>', unsafe_allow_html=True)
     
     # Initialize session state for upload visibility
     if 'show_upload' not in st.session_state:
