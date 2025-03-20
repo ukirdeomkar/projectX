@@ -235,180 +235,66 @@ def main():
             st.markdown("### Original Dataset")
             st.write(df)
 
-        # Export Section with Container
-        st.markdown("""
-        <div style="
-            border: 1px solid rgba(255, 75, 75, 0.2);
-            border-radius: 12px;
-            padding: 2rem;
-            margin: 2rem 0;
-            background: linear-gradient(145deg, rgba(17, 17, 17, 0.3) 0%, rgba(17, 17, 17, 0.2) 100%);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        ">
-            <h2 style="
-                color: #ff4b4b;
-                font-size: 1.5rem;
-                font-weight: 600;
-                margin-bottom: 1.5rem;
-                display: flex;
-                align-items: center;
-                gap: 8px;
-            ">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Export Results
-            </h2>
-            <div class="export-content">
-        """, unsafe_allow_html=True)
+        # Export Section
+        st.markdown("---")  # Add a separator
         
-        # Add container styling for export section
-        st.markdown("""
-        <style>
-        .export-content {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-        .stButton > button {
-            background: linear-gradient(145deg, #ff4b4b, #ff6b6b) !important;
-            color: white !important;
-            font-weight: 500 !important;
-            padding: 0.75rem 1.5rem !important;
-            border: none !important;
-            border-radius: 8px !important;
-            transition: all 0.3s ease !important;
-            width: 100% !important;
-            margin: 0.5rem 0 !important;
-            box-shadow: 0 2px 4px rgba(255, 75, 75, 0.1) !important;
-        }
-        .stButton > button:hover {
-            background: linear-gradient(145deg, #ff6b6b, #ff4b4b) !important;
-            transform: translateY(-2px) !important;
-            box-shadow: 0 4px 8px rgba(255, 75, 75, 0.25) !important;
-            color: white !important;
-        }
-        .export-button {
-            background: linear-gradient(145deg, #ff4b4b, #ff6b6b);
-            color: white !important;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            width: 100%;
-            max-width: 300px;
-            margin: 0.75rem 0;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(255, 75, 75, 0.1);
-        }
-        .export-button:hover {
-            background: linear-gradient(145deg, #ff6b6b, #ff4b4b);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 75, 75, 0.25);
-            color: white !important;
-            text-decoration: none;
-        }
-        .export-button svg {
-            stroke: white !important;
-        }
-        .success-message {
-            background-color: rgba(40, 167, 69, 0.1);
-            border: 1px solid rgba(40, 167, 69, 0.2);
-            color: #28a745;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            animation: fadeIn 0.5s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        </style>
-        """, unsafe_allow_html=True)
-
-        # Create columns for better layout
-        export_col1, export_col2, export_col3 = st.columns([1, 2, 1])
-        
-        with export_col2:
-            # Excel Export Button
-            if st.button('Generate Excel Report', key='export_button', use_container_width=True):
-                try:
-                    # Create a new DataFrame with an extra column to mark rows to highlight
-                    excel_df = new_df.copy()
-                    
-                    # Create a BytesIO object to hold the Excel file
-                    output = io.BytesIO()
-                    
-                    # Create an Excel writer
-                    writer = pd.ExcelWriter(output, engine='openpyxl')
-                    
-                    # Write DataFrame to Excel
-                    excel_df.to_excel(writer, index=False, sheet_name='Predictions')
-                    
-                    # Access the worksheet
-                    worksheet = writer.sheets['Predictions']
-                    
-                    # Apply darker red fill to rows with Prediction = 1
-                    for idx, row in excel_df.iterrows():
-                        if row['Prediction'] == 1:
-                            # Excel rows are 1-indexed and have a header row, so add 2
-                            row_idx = idx + 2
-                            for col_idx in range(1, len(excel_df.columns) + 1):
-                                cell = worksheet.cell(row=row_idx, column=col_idx)
-                                cell.fill = openpyxl.styles.PatternFill(start_color="FF6666", end_color="FF6666", fill_type="solid")
-                    
-                    # Save the workbook
-                    writer.close()
-                    
-                    # Get the value of the BytesIO buffer
-                    b64_excel = base64.b64encode(output.getvalue()).decode()
-                    
-                    # Generate download link with better styling
-                    st.markdown(f"""
-                        <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64_excel}" 
-                           download="tool_wear_predictions.xlsx"
-                           class="export-button">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                <polyline points="7 10 12 15 17 10"/>
-                                <line x1="12" y1="15" x2="12" y2="3"/>
-                            </svg>
-                            Download Excel Report
-                        </a>
-                        """, unsafe_allow_html=True)
-                    
-                    # Show success message with icon
-                    st.markdown("""
-                        <div class="success-message">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                <polyline points="22 4 12 14.01 9 11.01"/>
-                            </svg>
-                            <span>Excel report generated successfully!</span>
-                        </div>
-                        """, unsafe_allow_html=True)
-                except Exception as e:
-                    st.error(f"An error occurred while generating the Excel file: {str(e)}")
+        # Create a container for the export section
+        with st.container():
+            st.markdown("### 📤 Export Results")
             
-            st.markdown('</div>', unsafe_allow_html=True)
+            # Create columns for centering the buttons
+            col1, col2, col3 = st.columns([1, 2, 1])
+            
+            with col2:
+                # Generate Excel Report button
+                if st.button('Generate Excel Report', use_container_width=True):
+                    try:
+                        # Create a new DataFrame with an extra column to mark rows to highlight
+                        excel_df = new_df.copy()
+                        
+                        # Create a BytesIO object to hold the Excel file
+                        output = io.BytesIO()
+                        
+                        # Create an Excel writer
+                        writer = pd.ExcelWriter(output, engine='openpyxl')
+                        
+                        # Write DataFrame to Excel
+                        excel_df.to_excel(writer, index=False, sheet_name='Predictions')
+                        
+                        # Access the worksheet
+                        worksheet = writer.sheets['Predictions']
+                        
+                        # Apply darker red fill to rows with Prediction = 1
+                        for idx, row in excel_df.iterrows():
+                            if row['Prediction'] == 1:
+                                # Excel rows are 1-indexed and have a header row, so add 2
+                                row_idx = idx + 2
+                                for col_idx in range(1, len(excel_df.columns) + 1):
+                                    cell = worksheet.cell(row=row_idx, column=col_idx)
+                                    cell.fill = openpyxl.styles.PatternFill(start_color="FF6666", end_color="FF6666", fill_type="solid")
+                        
+                        # Save the workbook
+                        writer.close()
+                        
+                        # Get the Excel data
+                        excel_data = output.getvalue()
+                        
+                        # Show success message
+                        st.success("Excel report generated successfully!")
+                        
+                        # Add download button using Streamlit's native component
+                        st.download_button(
+                            label="Download Excel Report",
+                            data=excel_data,
+                            file_name="tool_wear_predictions.xlsx",
+                            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                            use_container_width=True
+                        )
+                        
+                    except Exception as e:
+                        st.error(f"An error occurred while generating the Excel file: {str(e)}")
 
-        # Close the container div
-        st.markdown("""
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown("---")  # Add a separator
 
 if __name__ == '__main__':
     main()
