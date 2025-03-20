@@ -1,1 +1,56 @@
-venv
+# Ignore virtual environment  
+.venv/  
+venv/  
+
+# Byte-compiled / optimized / DLL files  
+__pycache__/  
+*.py[cod]  
+*$py.class  
+
+# Distribution / packaging  
+.Python  
+build/  
+develop-eggs/  
+dist/  
+eggs/  
+*.egg-info/  
+.installed.cfg  
+*.egg  
+
+# C extensions  
+*.so  
+
+# Unit test / coverage reports  
+htmlcov/  
+.tox/  
+.nox/  
+.coverage  
+.coverage.*  
+.cache  
+nosetests.xml  
+coverage.xml  
+*.cover  
+.hypothesis/  
+
+# Jupyter Notebook checkpoints  
+.ipynb_checkpoints  
+
+# MyPy  
+.mypy_cache/  
+.dmypy.json  
+.pyre/  
+
+# PyCharm files  
+.idea/  
+*.iml  
+
+# VS Code settings  
+.vscode/  
+
+# Environment variables and secrets  
+.env  
+*.env  
+
+# Logs and debug files  
+logs/  
+*.log  
